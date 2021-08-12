@@ -66,6 +66,28 @@ class MutuallyExclusiveOption(click.Option):
                 '{options}'.format(options=', '.join(
                     ['`--{}`'.format(_) for _ in self.mutually_exclusive]))))
 
+ARROW_TYPES = [
+    "year",
+    "years",
+    "month",
+    "months",
+    "day",
+    "days",
+    "hour",
+    "hours",
+    "minute",
+    "minutes",
+    "second",
+    "seconds",
+    "microsecond",
+    "microseconds",
+    "week",
+    "weeks",
+    "quarter",
+    "quarters",
+]
+
+
 
 def local_tz_info() -> datetime.tzinfo:
     """Get the local time zone object, respects the TZ env variable."""
@@ -543,11 +565,13 @@ _SHORTCUT_OPTIONS_VALUES = {
               help="Format output in plain text (default)")
 @click.option('-g/-G', '--pager/--no-pager', 'pager', default=None,
               help="(Don't) view output through a pager.")
+@click.option('-z', '--timeframe', default='day', envvar='WATSON_TIMEFRAME',
+              type=click.Choice(['microsecond', 'microseconds', 'second', 'seconds', 'minute', 'minutes', 'hour', 'hours', 'day', 'days']))
 @click.pass_obj
 @catch_watson_error
 def report(watson, current, from_, to, projects, tags, ignore_projects,
            ignore_tags, year, month, week, day, luna, all, output_format,
-           pager, aggregated=False, include_partial_frames=True):
+           pager, timeframe, aggregated=False, include_partial_frames=True):
     """
     Display a report of the time spent on each project.
 
@@ -665,7 +689,8 @@ def report(watson, current, from_, to, projects, tags, ignore_projects,
                            ignore_projects, ignore_tags,
                            year=year, month=month, week=week, day=day,
                            luna=luna, all=all,
-                           include_partial_frames=include_partial_frames)
+                           include_partial_frames=include_partial_frames,
+                           timeframe=timeframe)
 
     if 'json' in output_format and not aggregated:
         click.echo(json.dumps(report, indent=4, sort_keys=True,
@@ -974,10 +999,13 @@ def aggregate(ctx, watson, current, from_, to, projects, tags, output_format,
               help="Format output in plain text (default)")
 @click.option('-g/-G', '--pager/--no-pager', 'pager', default=None,
               help="(Don't) view output through a pager.")
+@click.option('-z', '--timeframe', default='day', envvar='WATSON_TIMEFRAME',
+              type=click.Choice(ARROW_TYPES))
+
 @click.pass_obj
 @catch_watson_error
 def log(watson, current, reverse, from_, to, projects, tags, ignore_projects,
-        ignore_tags, year, month, week, day, luna, all, output_format, pager):
+        ignore_tags, year, month, week, day, luna, all, output_format, pager, timeframe):
     """
     Display each recorded session during the given timespan.
 
@@ -1067,7 +1095,7 @@ def log(watson, current, reverse, from_, to, projects, tags, ignore_projects,
     if reverse is None:
         reverse = watson.config.getboolean('options', 'reverse_log', True)
 
-    span = watson.frames.span(from_, to)
+    span = watson.frames.span(from_, to, timeframe)
     filtered_frames = watson.frames.filter(
         projects=projects or None, tags=tags or None,
         ignore_projects=ignore_projects or None,

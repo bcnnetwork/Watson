@@ -460,7 +460,7 @@ class Watson(object):
     def report(self, from_, to, current=None, projects=None, tags=None,
                ignore_projects=None, ignore_tags=None, year=None,
                month=None, week=None, day=None, luna=None, all=None,
-               include_partial_frames=False):
+               include_partial_frames=False, timeframe='day'):
         for start_time in (_ for _ in [day, week, month, year, luna, all]
                            if _ is not None):
             from_ = start_time
