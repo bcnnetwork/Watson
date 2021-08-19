@@ -740,10 +740,10 @@ def report(watson, current, from_, to, projects, tags, ignore_projects,
 
     else:
         _print('{} -> {}\n'.format(
-            style('date', '{:ddd DD MMMM YYYY}'.format(
+            style('date', '{:ddd DD MMMM YYYY HH:MM:SS}'.format(
                 report['timespan']['from']
             )),
-            style('date', '{:ddd DD MMMM YYYY}'.format(
+            style('date', '{:ddd DD MMMM YYYY HH:MM:SS}'.format(
                 report['timespan']['to']
             ))
         ))
