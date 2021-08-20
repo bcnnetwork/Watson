@@ -739,11 +739,14 @@ def report(watson, current, from_, to, projects, tags, ignore_projects,
         ))
 
     else:
+        print(report['timespan']['from'])
+        print(type(report['timespan']['to']))
+
         _print('{} -> {}\n'.format(
-            style('date', '{:ddd DD MMMM YYYY HH:MM:SS}'.format(
+            style('date', '{:ddd DD MMMM YYYY HH:mm:ss}'.format(
                 report['timespan']['from']
             )),
-            style('date', '{:ddd DD MMMM YYYY HH:MM:SS}'.format(
+            style('date', '{:ddd DD MMMM YYYY HH:mm:ss}'.format(
                 report['timespan']['to']
             ))
         ))
@@ -1160,8 +1163,8 @@ def log(watson, current, reverse, from_, to, projects, tags, ignore_projects,
                     frame.project, longest_project
                 )),
                 tags=(" "*2 if frame.tags else "") + style('tags', frame.tags),
-                start=style('time', '{:HH:mm}'.format(frame.start)),
-                stop=style('time', '{:HH:mm}'.format(frame.stop)),
+                start=style('time', '{:HH:mm:ss}'.format(frame.start)),
+                stop=style('time', '{:HH:mm:ss}'.format(frame.stop)),
                 id=style('short_id', frame.id)
             )
             for frame in frames

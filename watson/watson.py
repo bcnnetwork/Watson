@@ -483,7 +483,7 @@ class Watson(object):
             self.frames.add(cur['project'], cur['start'], arrow.utcnow(),
                             cur['tags'], id="current")
 
-        span = self.frames.span(from_, to)
+        span = self.frames.span(from_, to, timeframe)
 
         frames_by_project = sorted_groupby(
             self.frames.filter(
